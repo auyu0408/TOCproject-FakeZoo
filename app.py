@@ -14,23 +14,95 @@ load_dotenv()
 
 
 machine = TocMachine(
-    states=["user", "state1", "state2"],
+    states=["welcome", "place", "zoo", "marine", "picture", "rule1", "rule2", "rule3", "rule4", "rule5",
+    "rule6", "rule7", "rule8"],
     transitions=[
         {
             "trigger": "advance",
-            "source": "user",
-            "dest": "state1",
-            "conditions": "is_going_to_state1",
+            "source": "welcome",
+            "dest": "place",
+            "conditions": "check_place",
         },
         {
             "trigger": "advance",
-            "source": "user",
-            "dest": "state2",
-            "conditions": "is_going_to_state2",
+            "source": ["place", "marine"],
+            "dest": "zoo",
+            "conditions": "check_zoo",
         },
-        {"trigger": "go_back", "source": ["state1", "state2"], "dest": "user"},
+        {
+            "trigger": "advance",
+            "source": ["place", "marine"],
+            "dest": "marine",
+            "conditions": "check_marine",
+        },
+        {
+            "trigger": "advance",
+            "source": "zoo",
+            "dest": "rule1",
+            "conditions": "go_rule1",
+        },
+        {
+            "trigger": "advance",
+            "source": "zoo",
+            "dest": "rule2",
+            "conditions": "go_rule2"
+        },
+        {
+            "trigger": "advance",
+            "source": "zoo",
+            "dest": "rule3",
+            "conditions": "go_rule3"
+        },
+        {
+            "trigger": "advance",
+            "source": "zoo",
+            "dest": "rule4",
+            "conditions": "go_rule4"
+        },
+        {
+            "trigger": "advance",
+            "source": "zoo",
+            "dest": "rule5",
+            "conditions": "go_rule5"
+        },
+        {
+            "trigger": "advance",
+            "source": "zoo",
+            "dest": "rule6",
+            "conditions": "go_rule6"
+        },
+        {
+            "trigger": "advance",
+            "source": "zoo",
+            "dest": "rule7",
+            "conditions": "go_rule7"
+        },
+        {
+            "trigger": "advance",
+            "source": "zoo",
+            "dest": "rule8",
+            "conditions": "go_rule8"
+        },
+        {
+            "trigger": "advance",
+            "source": ["marine", "rule1", "rule3", "rule7", "rule8"],
+            "dest": "picture",
+            "conditions": "go_picture",
+        },
+        {
+            "trigger": "advance",
+            "source": ["rule1", "rule2", "rule3", "rule4", "rule5", "rule6", "rule7", "rule8", "picture"], 
+            "dest": "zoo",
+            "conditions": "check_zoo"
+        },
+        {
+            "trigger": "advance",
+            "source": ["welcome", "place", "zoo", "marine", "rule1", "rule2", "rule3", "rule4", "rule5", "rule6", "rule7", "rule8", "picture"], 
+            "dest": "welcome",
+            "conditions": "back_start"
+        },
     ],
-    initial="user",
+    initial="welcome",
     auto_transitions=False,
     show_conditions=True,
 )
@@ -71,10 +143,13 @@ def callback():
             continue
         if not isinstance(event.message, TextMessage):
             continue
-
-        line_bot_api.reply_message(
-            event.reply_token, TextSendMessage(text=event.message.text)
-        )
+        if not isinstance(event.message.text, str):
+            continue
+        print(f"\nFSM STATE: {machine.state}")
+        print(f"REQUEST BODY: \n{body}")
+        response = machine.advance(event)
+        if response == False:
+            send_text_message(event.reply_token,"請重新輸入!")
 
     return "OK"
 
