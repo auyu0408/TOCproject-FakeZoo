@@ -5,8 +5,6 @@
 [![Known Vulnerabilities](https://snyk.io/test/github/NCKU-CCS/TOC-Project-2020/badge.svg)](https://snyk.io/test/github/NCKU-CCS/TOC-Project-2020)
 
 
-Template Code for TOC Project 2020
-
 A Line bot based on a finite state machine
 
 More details in the [Slides](https://hackmd.io/@TTW/ToC-2019-Project#) and [FAQ](https://hackmd.io/s/B1Xw7E8kN)
@@ -14,9 +12,9 @@ More details in the [Slides](https://hackmd.io/@TTW/ToC-2019-Project#) and [FAQ]
 ## Setup
 
 ### Prerequisite
-* Python 3.6
+* Python 3.8
 * Pipenv
-* Facebook Page and App
+* Line App
 * HTTPS Server
 
 #### Install Dependency
@@ -74,16 +72,99 @@ Or You can use [servo](http://serveo.net/) to expose local servers to the intern
 ![fsm](./img/show-fsm.png)
 
 ## Usage
-The initial state is set to `user`.
+The initial state is set to `welcome`.
 
-Every time `user` state is triggered to `advance` to another state, it will `go_back` to `user` state after the bot replies corresponding message.
+Every time `welecome` state is triggered to `advance` to another state, it will `go_back` to `welcome` state after the bot replies corresponding message.
 
-* user
-	* Input: "go to state1"
-		* Reply: "I'm entering state1"
-
-	* Input: "go to state2"
-		* Reply: "I'm entering state2"
+- welecome
+  - Input: "start"
+    - Reply: "Entering place"
+  - Input: "help", "e"
+    - Reply: "Entering greeting"
+- place
+  - Input: "z"
+    - Reply: "Entering zoo"
+  - Input: "m"
+    - Reply: "Entering marine"
+- zoo
+  - Input: "1"
+    - Reply: "Entering rule1"
+  - Input: "2"
+    - Reply: "Entering rule2"
+  - Input: "3"
+    - Reply: "Entering rule3"
+  - Input: "4"
+    - Reply: "Entering rule4"
+  - Input: "5"
+    - Reply: "Entering rule5"
+  - Input: "6"
+    - Reply: "Entering rule6"
+  - Input: "7"
+    - Reply: "Entering rule7"
+  - Input: "8"
+    - Reply: "Entering rule8"
+  - Input: "help", "e"
+    - Reply: "Entering greeting"
+- rule1
+  - Input: "p"
+    - Reply: "Entering picture"
+  - Input: "z"
+    - Reply: "Entering zoo"
+  - Input: "help", "e"
+    - Reply: "Entering greeting"
+- rule2
+  - Input: "z"
+    - Reply: "Entering zoo"
+  - Input: "help", "e"
+    - Reply: "Entering greeting"
+- rule3
+  - Input: "p"
+    - Reply: "Entering picture"
+  - Input: "z"
+    - Reply: "Entering zoo"
+  - Input: "help", "e"
+    - Reply: "Entering greeting"
+- rule4
+  - Input: "z"
+    - Reply: "Entering zoo"
+  - Input: "help", "e"
+    - Reply: "Entering greeting"
+- rule5
+  - Input: "z"
+    - Reply: "Entering zoo"
+  - Input: "help", "e"
+    - Reply: "Entering greeting"
+- rule6
+  - Input: "z"
+    - Reply: "Entering zoo"
+  - Input: "help", "e"
+    - Reply: "Entering greeting"
+- rule7
+  - Input: "p"
+    - Reply: "Entering picture"
+  - Input: "z"
+    - Reply: "Entering zoo"
+  - Input: "help", "e"
+    - Reply: "Entering greeting"
+- rule8
+  - Input: "p"
+    - Reply: "Entering picture"
+  - Input: "z"
+    - Reply: "Entering zoo"
+  - Input: "help", "e"
+    - Reply: "Entering greeting"
+- marine
+  - Input: "p"
+    - Reply: "Entering picture"
+  - Input: "z"
+    - Reply: "Entering zoo"
+  - Input: "m"
+    - Reply: "Entering marine"
+- picture
+  - Input: "z"
+    - Reply: "Entering zoo"
+  - Input: "help", "e"
+    - Reply: "Entering greeting"
 
 ## Deploy
 Setting to deploy webhooks on Heroku.
@@ -99,7 +180,7 @@ brew tap heroku/brew && brew install heroku
 
 or you can use Snap (Ubuntu 16+)
 ```sh
-sudo snap install --classic heroku
+curl https://cli-assets.heroku.com/install.sh | sh
 ```
 
 ### Connect to Heroku
@@ -114,9 +195,9 @@ sudo snap install --classic heroku
 
 ### Upload project to Heroku
 
-1. Add local project to Heroku project
+1. Add local project to Heroku project (or you can build it)
 
-	heroku git:remote -a {HEROKU_APP_NAME}
+	`heroku git:remote -a {HEROKU_APP_NAME}`
 
 2. Upload project
 
