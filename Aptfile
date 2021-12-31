@@ -1,3 +1,4 @@
 graphviz
 libgraphviz-dev
 pkg-config
+python3-pygraphviz
