@@ -16,6 +16,7 @@ More details in the [Slides](https://hackmd.io/@TTW/ToC-2019-Project#) and [FAQ]
 * Pipenv
 * Line App
 * HTTPS Server
+* Redis
 
 #### Install Dependency
 ```sh
@@ -37,9 +38,14 @@ pipenv shell
 You should generate a `.env` file to set Environment Variables refer to our `.env.sample`.
 `LINE_CHANNEL_SECRET` and `LINE_CHANNEL_ACCESS_TOKEN` **MUST** be set to proper values.
 Otherwise, you might not be able to run your code.
+You should also set your `REDIS_TLS_URL` for the use of REDIS.
 
 #### Run Locally
 You can either setup https server or using `ngrok` as a proxy.
+
+#### Open Redis
+
+`redis-server`
 
 #### Ngrok installation
 * [ macOS, Windows, Linux](https://ngrok.com/download)
@@ -150,6 +156,10 @@ curl https://cli-assets.heroku.com/install.sh | sh
 	url: `{HEROKU_APP_NAME}.herokuapp.com/callback`
 
 	debug command: `heroku logs --tail --app {HEROKU_APP_NAME}`
+
+6. Redis
+
+	As for `REDIS`, you can use `heroku addons` or other method to get, don't forget to modified your `.env` or `heroku config`.
 
 ## Reference
 [Pipenv](https://medium.com/@chihsuan/pipenv-更簡單-更快速的-python-套件管理工具-135a47e504f4) [@chihsuan](https://github.com/chihsuan)
