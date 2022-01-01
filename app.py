@@ -8,6 +8,7 @@ from linebot.exceptions import InvalidSignatureError
 from linebot.models import MessageEvent, TextMessage, TextSendMessage
 
 from fsm import TocMachine
+from urllib.parse import urlparse
 from utils import send_text_message
 import redis
 
@@ -113,9 +114,10 @@ app = Flask(__name__, static_url_path="")
 # get channel_secret and channel_access_token from your environment variable
 channel_secret = os.getenv("LINE_CHANNEL_SECRET", None)
 channel_access_token = os.getenv("LINE_CHANNEL_ACCESS_TOKEN", None)
-password = os.getenv("PASSWORD",None)
-host = os.getenv("REDIS_URL", None)
-db = redis.StrictRedis(host=host, port=6379)
+host=os.environ.get("REDIS_TLS_URL")
+password=os.getenv("REDIS_PASSWORD")
+url = urlparse(os.environ.get("REDIS_TLS_URL"))
+db = redis.Redis(host=url.hostname, port=url.port, username=url.username, password=url.password, ssl=True, ssl_cert_reqs=None)
 if channel_secret is None:
     print("Specify LINE_CHANNEL_SECRET as environment variable.")
     sys.exit(1)
