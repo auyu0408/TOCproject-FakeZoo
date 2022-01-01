@@ -1,7 +1,7 @@
 import os
 import sys
 
-from flask import Flask, jsonify, request, abort, send_file
+from flask import Flask, jsonify, request, abort, send_file, render_template
 from dotenv import load_dotenv
 from linebot import LineBotApi, WebhookParser
 from linebot.exceptions import InvalidSignatureError
@@ -9,9 +9,9 @@ from linebot.models import MessageEvent, TextMessage, TextSendMessage
 
 from fsm import TocMachine
 from utils import send_text_message
+import redis
 
 load_dotenv()
-
 
 machine = TocMachine(
     states=["welcome", "place", "zoo", "marine", "picture", "rule1", "rule2", "rule3", "rule4", "rule5",
@@ -107,6 +107,14 @@ machine = TocMachine(
     show_conditions=True,
 )
 
+def makeTocMachine(state):
+    return TocMachine(
+        state=state,
+        initial="welcome",
+        auto_transitions=False,
+        show_conditions=True,
+    )
+
 app = Flask(__name__, static_url_path="")
 
 
@@ -123,6 +131,9 @@ if channel_access_token is None:
 line_bot_api = LineBotApi(channel_access_token)
 parser = WebhookParser(channel_secret)
 
+@app.route("/")
+def home():
+    return render_template("./template/home.html")
 
 @app.route("/callback", methods=["POST"])
 def callback():
@@ -143,16 +154,11 @@ def callback():
             continue
         if not isinstance(event.message, TextMessage):
             continue
-        if not isinstance(event.message.text, str):
-            continue
-        print(f"\nFSM STATE: {machine.state}")
-        print(f"REQUEST BODY: \n{body}")
-        response = machine.advance(event)
-        if response == False:
-            send_text_message(event.reply_token,"請重新輸入!")
+        line_bot_api.reply_message(
+            event.reply_token, TextSendMessage(text=event.message.text)
+        )
 
     return "OK"
-
 
 @app.route("/webhook", methods=["POST"])
 def webhook_handler():
@@ -175,11 +181,17 @@ def webhook_handler():
             continue
         if not isinstance(event.message.text, str):
             continue
+        user_id = event.source.user_id
+        if(db.exists(user_id)==False):
+            machine = makeTocMachine('welcome')
+        else:
+            machine = makeTocMachine(db.get(user_id))
         print(f"\nFSM STATE: {machine.state}")
         print(f"REQUEST BODY: \n{body}")
         response = machine.advance(event)
+        db.set(user_id, machine.state)
         if response == False:
-            send_text_message(event.reply_token, "Not Entering any State")
+            send_text_message(event.reply_token, "請重新輸入!")
 
     return "OK"
 
@@ -192,4 +204,5 @@ def show_fsm():
 
 if __name__ == "__main__":
     port = os.environ.get("PORT", 8000)
+    db = redis.StrictRedis(host='localhost', port=6379, db=0)
     app.run(host="0.0.0.0", port=port, debug=True)
