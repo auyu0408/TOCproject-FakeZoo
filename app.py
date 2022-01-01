@@ -107,14 +107,6 @@ machine = TocMachine(
     show_conditions=True,
 )
 
-def makeTocMachine(state):
-    return TocMachine(
-        state=state,
-        initial="welcome",
-        auto_transitions=False,
-        show_conditions=True,
-    )
-
 app = Flask(__name__, static_url_path="")
 
 
@@ -123,6 +115,7 @@ channel_secret = os.getenv("LINE_CHANNEL_SECRET", None)
 channel_access_token = os.getenv("LINE_CHANNEL_ACCESS_TOKEN", None)
 password = os.getenv("PASSWORD",None)
 host = os.getenv("REDIS_URL", None)
+db = redis.StrictRedis(host=host, port=6379)
 if channel_secret is None:
     print("Specify LINE_CHANNEL_SECRET as environment variable.")
     sys.exit(1)
@@ -160,9 +153,9 @@ def callback():
             continue
         user_id = event.source.user_id
         if(db.exists(user_id)==False):
-            machine = makeTocMachine('welcome')
+            machine.state = "welcome"
         else:
-            machine = makeTocMachine(db.get(user_id))
+            machine.state = db.get(user_id).decode("UTF-8")
         print(f"\nFSM STATE: {machine.state}")
         print(f"REQUEST BODY: \n{body}")
         response = machine.advance(event)
@@ -195,13 +188,13 @@ def webhook_handler():
             continue
         user_id = event.source.user_id
         if(db.exists(user_id)==False):
-            machine = makeTocMachine('welcome')
+            machine.state = 'welcome'
         else:
-            machine = makeTocMachine(db.get(user_id))
+            machine.state = db.get(user_id)
         print(f"\nFSM STATE: {machine.state}")
         print(f"REQUEST BODY: \n{body}")
         response = machine.advance(event)
-        db.set(user_id, machine.state)
+        db.set(user_id, f"{machine.state}")
         if response == False:
             send_text_message(event.reply_token, "請重新輸入!")
 
@@ -216,5 +209,4 @@ def show_fsm():
 
 if __name__ == "__main__":
     port = os.environ.get("PORT", 8000)
-    db = redis.StrictRedis(host=host, port=6379, password=password)
     app.run(host="0.0.0.0", port=port, debug=True)
