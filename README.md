@@ -72,6 +72,8 @@ Every time `welecome` state is triggered to `advance` to another state, it can b
 
 Each input is not case sensitive, it also allow blank after the input string.
 
+I also use Redis in Heroku to record the state for each user.
+
 ## Usage
 
 ### Bot QRcode
@@ -83,7 +85,6 @@ Each input is not case sensitive, it also allow blank after the input string.
  And below is an example
 ![rule](./img/rule.jpg)
 ![picture](./img/picture.jpg)
-
 
 ## Deploy
 Setting to deploy webhooks on Heroku.
