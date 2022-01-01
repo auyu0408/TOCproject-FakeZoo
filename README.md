@@ -1,4 +1,4 @@
-# TOC Project 2020
+# TOC Project - FakeZoo
 
 [![Maintainability](https://api.codeclimate.com/v1/badges/dc7fa47fcd809b99d087/maintainability)](https://codeclimate.com/github/NCKU-CCS/TOC-Project-2020/maintainability)
 
@@ -41,7 +41,7 @@ Otherwise, you might not be able to run your code.
 #### Run Locally
 You can either setup https server or using `ngrok` as a proxy.
 
-#### a. Ngrok installation
+#### Ngrok installation
 * [ macOS, Windows, Linux](https://ngrok.com/download)
 
 or you can use Homebrew (MAC)
@@ -63,108 +63,27 @@ After that, `ngrok` would generate a https URL.
 python3 app.py
 ```
 
-#### b. Servo
-
-Or You can use [servo](http://serveo.net/) to expose local servers to the internet.
-
-
 ## Finite State Machine
 ![fsm](./img/show-fsm.png)
 
-## Usage
 The initial state is set to `welcome`.
 
-Every time `welecome` state is triggered to `advance` to another state, it will `go_back` to `welcome` state after the bot replies corresponding message.
+Every time `welecome` state is triggered to `advance` to another state, it can back to `welcome` state as long as the input is `help` or `e`.
 
-- welecome
-  - Input: "start"
-    - Reply: "Entering place"
-  - Input: "help", "e"
-    - Reply: "Entering greeting"
-- place
-  - Input: "z"
-    - Reply: "Entering zoo"
-  - Input: "m"
-    - Reply: "Entering marine"
-- zoo
-  - Input: "1"
-    - Reply: "Entering rule1"
-  - Input: "2"
-    - Reply: "Entering rule2"
-  - Input: "3"
-    - Reply: "Entering rule3"
-  - Input: "4"
-    - Reply: "Entering rule4"
-  - Input: "5"
-    - Reply: "Entering rule5"
-  - Input: "6"
-    - Reply: "Entering rule6"
-  - Input: "7"
-    - Reply: "Entering rule7"
-  - Input: "8"
-    - Reply: "Entering rule8"
-  - Input: "help", "e"
-    - Reply: "Entering greeting"
-- rule1
-  - Input: "p"
-    - Reply: "Entering picture"
-  - Input: "z"
-    - Reply: "Entering zoo"
-  - Input: "help", "e"
-    - Reply: "Entering greeting"
-- rule2
-  - Input: "z"
-    - Reply: "Entering zoo"
-  - Input: "help", "e"
-    - Reply: "Entering greeting"
-- rule3
-  - Input: "p"
-    - Reply: "Entering picture"
-  - Input: "z"
-    - Reply: "Entering zoo"
-  - Input: "help", "e"
-    - Reply: "Entering greeting"
-- rule4
-  - Input: "z"
-    - Reply: "Entering zoo"
-  - Input: "help", "e"
-    - Reply: "Entering greeting"
-- rule5
-  - Input: "z"
-    - Reply: "Entering zoo"
-  - Input: "help", "e"
-    - Reply: "Entering greeting"
-- rule6
-  - Input: "z"
-    - Reply: "Entering zoo"
-  - Input: "help", "e"
-    - Reply: "Entering greeting"
-- rule7
-  - Input: "p"
-    - Reply: "Entering picture"
-  - Input: "z"
-    - Reply: "Entering zoo"
-  - Input: "help", "e"
-    - Reply: "Entering greeting"
-- rule8
-  - Input: "p"
-    - Reply: "Entering picture"
-  - Input: "z"
-    - Reply: "Entering zoo"
-  - Input: "help", "e"
-    - Reply: "Entering greeting"
-- marine
-  - Input: "p"
-    - Reply: "Entering picture"
-  - Input: "z"
-    - Reply: "Entering zoo"
-  - Input: "m"
-    - Reply: "Entering marine"
-- picture
-  - Input: "z"
-    - Reply: "Entering zoo"
-  - Input: "help", "e"
-    - Reply: "Entering greeting"
+Each input is not case sensitive, it also allow blank after the input string.
+
+## Usage
+
+### Bot QRcode
+![qrcode](https://qr-official.line.me/sid/L/251ojvnl.png)
+
+ Once you add as friend, you will see the welcome message:
+![welcome](./img/start.jpg)
+
+ And below is an example
+![rule](./img/rule.jpg)
+![picture](./img/picture.jpg)
+
 
 ## Deploy
 Setting to deploy webhooks on Heroku.
@@ -199,42 +118,43 @@ curl https://cli-assets.heroku.com/install.sh | sh
 
 	`heroku git:remote -a {HEROKU_APP_NAME}`
 
-2. Upload project
+2. Set buildpack in Heroku (for `pygraphviz` usage)
+
+```
+  heroku buildpacks:set heroku/python
+  heroku buildpacks:add --index 1 heroku-community/apt
+  heroku buildpacks:add https://github.com/weibeld/heroku-buildpack-graphviz
+  heroku buildpacks
+```
+
+	reference: https://hackmd.io/@ccw/B1Xw7E8kN?type=view#Q2-如何在-Heroku-使用-pygraphviz
+
+3. Upload project
 
 	```
 	git add .
 	git commit -m "Add code"
-	git push -f heroku master
+	git push heroku master
 	```
 
-3. Set Environment - Line Messaging API Secret Keys
+4. Set Environment - Line Messaging API Secret Keys
 
 	```
 	heroku config:set LINE_CHANNEL_SECRET=your_line_channel_secret
 	heroku config:set LINE_CHANNEL_ACCESS_TOKEN=your_line_channel_access_token
 	```
 
-4. Your Project is now running on Heroku!
+5. Your Project is now running on Heroku!
 
 	url: `{HEROKU_APP_NAME}.herokuapp.com/callback`
 
 	debug command: `heroku logs --tail --app {HEROKU_APP_NAME}`
 
-5. If fail with `pygraphviz` install errors
-
-	run commands below can solve the problems
-	```
-	heroku buildpacks:set heroku/python
-	heroku buildpacks:add --index 1 heroku-community/apt
-	```
-
-	refference: https://hackmd.io/@ccw/B1Xw7E8kN?type=view#Q2-如何在-Heroku-使用-pygraphviz
-
 ## Reference
-[Pipenv](https://medium.com/@chihsuan/pipenv-更簡單-更快速的-python-套件管理工具-135a47e504f4) ❤️ [@chihsuan](https://github.com/chihsuan)
+[Pipenv](https://medium.com/@chihsuan/pipenv-更簡單-更快速的-python-套件管理工具-135a47e504f4) [@chihsuan](https://github.com/chihsuan)
 
-[TOC-Project-2019](https://github.com/winonecheng/TOC-Project-2019) ❤️ [@winonecheng](https://github.com/winonecheng)
+[TOC-Project-2019](https://github.com/winonecheng/TOC-Project-2019) [@winonecheng](https://github.com/winonecheng)
 
-Flask Architecture ❤️ [@Sirius207](https://github.com/Sirius207)
+Flask Architecture  [@Sirius207](https://github.com/Sirius207)
 
 [Line line-bot-sdk-python](https://github.com/line/line-bot-sdk-python/tree/master/examples/flask-echo)
