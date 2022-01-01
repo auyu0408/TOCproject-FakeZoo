@@ -35,17 +35,13 @@ pipenv shell
 
 
 #### Secret Data
-You should generate a `.env` file to set Environment Variables refer to our `.env.sample`.
+You should generate a `.env` file to set Environment Variables refer to our `.env.sample`.  
 `LINE_CHANNEL_SECRET` and `LINE_CHANNEL_ACCESS_TOKEN` **MUST** be set to proper values.
-Otherwise, you might not be able to run your code.
-You should also set your `REDIS_TLS_URL` for the use of REDIS.
+Otherwise, you might not be able to run your code.  
+You should also set your `REDIS_TLS_URL` for the use of REDIS. (A sample method is mentioned behind)
 
 #### Run Locally
 You can either setup https server or using `ngrok` as a proxy.
-
-#### Open Redis
-
-`redis-server`
 
 #### Ngrok installation
 * [ macOS, Windows, Linux](https://ngrok.com/download)
@@ -127,22 +123,24 @@ curl https://cli-assets.heroku.com/install.sh | sh
 
 2. Set buildpack in Heroku (for `pygraphviz` usage)
 
-```
-  heroku buildpacks:set heroku/python
-  heroku buildpacks:add --index 1 heroku-community/apt
-  heroku buildpacks:add https://github.com/weibeld/heroku-buildpack-graphviz
-  heroku buildpacks
-```
+	```
+	heroku buildpacks:set heroku/python
+	heroku buildpacks:add --index 1 heroku-community/apt
+	heroku buildpacks:add https://github.com/weibeld/heroku-buildpack-graphviz
+	heroku buildpacks
+	```
 
-	reference: https://hackmd.io/@ccw/B1Xw7E8kN?type=view#Q2-如何在-Heroku-使用-pygraphviz
+3. Heroku Redis Add-ons (optional)
 
-3. Upload project
+   If you havn't deploy your redis, you can use Heroku addons.
+
+   You should verified your Heroku account before you execute these command.
 
 	```
-	git add .
-	git commit -m "Add code"
-	git push heroku master
+	heroku addons:create heroku-redis:hobby-dev -a your-app-name
 	```
+  
+   if you want to run locally, use `heroku config:get REDIS_TLS_URL -s >> .env` to get the URL which will use in this process.
 
 4. Set Environment - Line Messaging API Secret Keys
 
@@ -151,15 +149,19 @@ curl https://cli-assets.heroku.com/install.sh | sh
 	heroku config:set LINE_CHANNEL_ACCESS_TOKEN=your_line_channel_access_token
 	```
 
-5. Your Project is now running on Heroku!
+5. Upload project
+
+	```
+	git add .
+	git commit -m "Add code"
+	git push heroku master
+	```
+
+6. Your Project is now running on Heroku!
 
 	url: `{HEROKU_APP_NAME}.herokuapp.com/callback`
 
 	debug command: `heroku logs --tail --app {HEROKU_APP_NAME}`
-
-6. Redis
-
-	As for `REDIS`, you can use `heroku addons` or other method to get, don't forget to modified your `.env` or `heroku config`.
 
 ## Reference
 [Pipenv](https://medium.com/@chihsuan/pipenv-更簡單-更快速的-python-套件管理工具-135a47e504f4) [@chihsuan](https://github.com/chihsuan)
@@ -169,3 +171,7 @@ curl https://cli-assets.heroku.com/install.sh | sh
 Flask Architecture  [@Sirius207](https://github.com/Sirius207)
 
 [Line line-bot-sdk-python](https://github.com/line/line-bot-sdk-python/tree/master/examples/flask-echo)
+
+[Heroku and pygraphviz](https://hackmd.io/@ccw/B1Xw7E8kN?type=view#Q2-如何在-Heroku-使用-pygraphviz)
+
+[Heroku Redis Add-pns](https://devcenter.heroku.com/articles/heroku-redis)
