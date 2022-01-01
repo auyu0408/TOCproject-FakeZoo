@@ -154,9 +154,19 @@ def callback():
             continue
         if not isinstance(event.message, TextMessage):
             continue
-        line_bot_api.reply_message(
-            event.reply_token, TextSendMessage(text=event.message.text)
-        )
+        if not isinstance(event.message.text, str):
+            continue
+        user_id = event.source.user_id
+        if(db.exists(user_id)==False):
+            machine = makeTocMachine('welcome')
+        else:
+            machine = makeTocMachine(db.get(user_id))
+        print(f"\nFSM STATE: {machine.state}")
+        print(f"REQUEST BODY: \n{body}")
+        response = machine.advance(event)
+        db.set(user_id, machine.state)
+        if response == False:
+            send_text_message(event.reply_token, "請重新輸入!")
 
     return "OK"
 
