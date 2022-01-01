@@ -17,4 +17,3 @@ transitions==0.6.9
 urllib3==1.25.6
 werkzeug==0.16.0
 APScheduler==*
-redis==*
