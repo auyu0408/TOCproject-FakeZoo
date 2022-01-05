@@ -15,7 +15,7 @@ import redis
 load_dotenv()
 
 machine = TocMachine(
-    states=["welcome", "place", "zoo", "marine", "picture", "rule1", "rule2", "rule3", "rule4", "rule5",
+    states=["demo", "welcome", "place", "zoo", "marine", "picture", "rule1", "rule2", "rule3", "rule4", "rule5",
     "rule6", "rule7", "rule8"],
     transitions=[
         {
