@@ -32,6 +32,12 @@ machine = TocMachine(
         },
         {
             "trigger": "advance",
+            "source": "demo",
+            "dest": "demo",
+            "conditions": "demo",
+        },
+        {
+            "trigger": "advance",
             "source": ["place", "marine"],
             "dest": "zoo",
             "conditions": "check_zoo",

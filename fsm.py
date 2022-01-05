@@ -170,7 +170,7 @@ class TocMachine(GraphMachine):
         reply_token = event.reply_token
         send_image_message( reply_token, image_data[picture])
 
-    def on_demo(self, event):
+    def on_enter_demo(self, event):
         print("Entering demo\n");
         reply_token = event.reply_token
         send_text_message(reply_token, "demo");
