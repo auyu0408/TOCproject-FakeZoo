@@ -25,7 +25,7 @@ machine = TocMachine(
             "conditions": "check_place",
         },
         {
-            "trigger": "demo",
+            "trigger": "advance",
             "source": "welcome",
             "dest": "demo",
             "conditions": "demo",
