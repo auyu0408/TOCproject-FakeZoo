@@ -41,6 +41,10 @@ class TocMachine(GraphMachine):
         text = event.message.text
         return text.rstrip().lower() == 'start'
 
+    def demo(self,event):
+        text = event.message.text
+        return text.rstrip().lower() == 'demo'
+
     def check_zoo(self, event):
         text = event.message.text
         return text.rstrip().lower() == "z"
@@ -165,3 +169,8 @@ class TocMachine(GraphMachine):
         print("Entering picture\n")
         reply_token = event.reply_token
         send_image_message( reply_token, image_data[picture])
+
+    def on_demo(self, event):
+        print("Entering demo\n");
+        reply_token = event.reply_token
+        send_text_message(reply_token, "demo");

@@ -25,6 +25,12 @@ machine = TocMachine(
             "conditions": "check_place",
         },
         {
+            "trigger": "demo",
+            "source": "welcome",
+            "dest": "demo",
+            "conditions": "demo",
+        },
+        {
             "trigger": "advance",
             "source": ["place", "marine"],
             "dest": "zoo",
@@ -92,13 +98,13 @@ machine = TocMachine(
         },
         {
             "trigger": "advance",
-            "source": ["rule1", "rule2", "rule3", "rule4", "rule5", "rule6", "rule7", "rule8", "picture"], 
+            "source": ["demo", "rule1", "rule2", "rule3", "rule4", "rule5", "rule6", "rule7", "rule8", "picture"], 
             "dest": "zoo",
             "conditions": "check_zoo"
         },
         {
             "trigger": "advance",
-            "source": ["welcome", "place", "zoo", "marine", "rule1", "rule2", "rule3", "rule4", "rule5", "rule6", "rule7", "rule8", "picture"], 
+            "source": ["demo", "welcome", "place", "zoo", "marine", "rule1", "rule2", "rule3", "rule4", "rule5", "rule6", "rule7", "rule8", "picture"], 
             "dest": "welcome",
             "conditions": "back_start"
         },
